@@ -1,0 +1,98 @@
+---
+env:
+  node: true
+  mocha: true
+  es6: true
+
+globals:
+  Class: true
+
+rules:
+
+  complexity:
+    - error
+    - 10
+
+  quotes:
+    - warn
+    - double
+    - avoidEscape: true
+      allowTemplateLiterals: true
+
+  computed-property-spacing:
+    - warn
+    - never
+
+  array-bracket-spacing:
+    - warn
+    - always
+    - singleValue: true
+      objectsInArrays: true
+      arraysInArrays: true
+
+  object-curly-spacing:
+    - warn
+    - always
+    - arraysInObjects: true
+      objectsInObjects: true
+
+  capitalized-comments:
+    - warn
+    - always
+    - ignorePattern: "^\\s|console.log"
+
+  comma-dangle:
+    - warn
+    - arrays: always-multiline
+      objects: always-multiline
+      imports: always-multiline
+      exports: always-multiline
+      functions: ignore
+
+  eol-last: warn
+
+  func-name-matching: error
+
+  max-len:
+    - warn
+    - code: 120
+      tabWidth: 2
+      ignoreComments: true
+      ignoreTrailingComments: true
+      ignoreUrls: true
+      ignoreStrings: true
+      ignoreTemplateLiterals: true
+      ignoreRegExpLiterals: true
+  max-depth: warn
+  max-lines: warn
+  no-tabs: error
+  no-lonely-if: error
+  no-nested-ternary: error
+  semi:
+    - warn
+    - never
+  spaced-comment:
+    - warn
+    - always
+  arrow-spacing: error
+  arrow-parens:
+    - warn
+    - as-needed
+  prefer-arrow-callback:
+    - warn
+    - allowNamedFunctions: true
+  no-dupe-class-members: error
+  no-const-assign: error
+  no-useless-rename: error
+  no-useless-constructor: error
+  no-useless-computed-key: error
+  no-var: error
+  no-undef: error
+  no-unused-vars: warn
+  prefer-destructuring:
+    - warn
+    - object: true
+      array: false
+  prefer-numeric-literals: error
+  rest-spread-spacing: error
+  curly: error

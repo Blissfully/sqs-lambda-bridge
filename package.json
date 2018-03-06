@@ -1,0 +1,25 @@
+{
+  "name": "sqs-lambda-bridge",
+  "version": "1.0.0",
+  "description": "The missing SQS → Lambda bridge",
+  "main": "index.js",
+  "contributors": [
+    {
+      "name": "Jacob Elder",
+      "email": "jacob@blissfully.com"
+    }
+  ],
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "node ./index.js",
+    "sh": "docker exec -i -t sqs-lambda-bridge /bin/sh"
+  },
+  "dependencies": {
+    "aws-sdk": "2.205.0",
+    "bluebird": "3.5.1",
+    "sqs-consumer": "3.8.0"
+  },
+  "devDependencies": {
+    "prettier-eslint": "8.8.1"
+  }
+}
