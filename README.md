@@ -1,6 +1,6 @@
 # SQS Lambda Bridge
 
-Invoke AWS Lambda from SQS queues within concurrency limits.
+Invoke AWS Lambda functions from SQS queues while adhering to strict concurrency limits. 
 
 ## Use
 
