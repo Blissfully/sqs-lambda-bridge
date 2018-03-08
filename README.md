@@ -4,7 +4,7 @@ Invoke AWS Lambda functions from SQS queues while adhering to strict concurrency
 
 ## Use
 
-A Dockerfile is provided to simplify deployment, but anywhere you can run `npm start` is sufficient. See [Installation Tutorial](#installation-tutorial) for more.
+A Dockerfile is provided to simplify deployment, but anywhere you can run `npm start` is sufficient. See [Installation](#installation) for details.
 
 Instead of triggering your Lambda function with [`lambda.invoke`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Lambda.html#invoke-property), use [`sqs.sendMessage`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) or [`sqs.sendMessageBatch`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessageBatch-property). Specify the name of the Lambda function via the [message attribute](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-attributes.html) `FunctionName`. The function payload should be the message body. Both are JSON encoded.
 
@@ -65,7 +65,7 @@ There is exactly one O(1) operation in SQS and that is purgeQueue. It's not easy
 
 For example, normal queues can't do deduplication or guarantee ordering, and FIFO queues can't do delays on individual messages. **If you need mutually exclusive features, make more queues.**
 
-## Installation Instruction
+## Installation
 
 In this tutorial, we'll be deploying to [Amazon Fargate](https://aws.amazon.com/fargate/), but anywhere you can run `npm start` should work.
 
