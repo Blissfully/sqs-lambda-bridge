@@ -44,11 +44,11 @@ For the highest throughput, you'd want to have only one queue, with lots of work
 
 ### 1. Priority
 
-If all jobs are otherwise equal, but some need to be completed relatively sooner than others, create a dedicated queue for them and add to it only when needed. You may create separate queues for different classes of customers: free users vs. paying customers, or you may have separate queues for batch vs. interactive uses.
+If all jobs are otherwise equal, but some need to be completed relatively sooner than others, **create a dedicated queue for time-critical work and add to it sparingly.** You may create separate queues for different classes of customers: free users vs. paying customers, or you may have separate queues for batch vs. interactive uses.
 
 ### 2. Different jobs consume different resources
 
-With Lambda we have amazing scalability, right? But not all functions are stateless. A function may make a connection to RDS, which has of 1000 concurrent connections, or it could hit a 3rd party API that has strict rate limits. Each function should be sent to a queue named for the most scarce resource which it consumes. 
+With Lambda we have amazing scalability, right? But not all functions are stateless. A function may make a connection to RDS, which has a limit of 1000 concurrent connections, or it could hit a 3rd party API that has strict rate limits. **Each function should be sent to a queue named for the most scarce resource which it consumes.**
 
 Example:
 - `Lambda` for stateless stuff that is only limited by your account's Lambda concurrency.
@@ -57,11 +57,11 @@ Example:
 
 ### 3. Purging
 
-There is exactly one O(1) operation in SQS and that is purgeQueue. It's not easy to scan through all jobs and delete only some of them, and there may always be jobs you can't see at the moment, and even viewing a message increments its receive count which may movie it closer to the DQL. Jobs are also immutable. If there's a class of function invocation that we may need to cancel, dedicate a queue to this function.
+There is exactly one O(1) operation in SQS and that is purgeQueue. It's not easy to scan through all jobs and delete only some of them, and there may always be jobs you can't see at the moment, and even viewing a message increments its receive count which may movie it closer to the DQL. Jobs are also immutable. **If there's a class of function invocation that we may need to cancel, dedicate a queue to this function.**
 
 ### 4. Queue-level features.
 
-For example, normal queues can't do deduplication or guarantee ordering, and FIFO queues can't do delays on individual messages.
+For example, normal queues can't do deduplication or guarantee ordering, and FIFO queues can't do delays on individual messages. **If you need mutually exclusive features, make more queues.**
 
 ## Installation
 
