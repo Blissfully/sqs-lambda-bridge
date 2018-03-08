@@ -9,7 +9,7 @@
       "email": "jacob@blissfully.com"
     }
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "start": "node ./index.js",
     "sh": "docker exec -i -t sqs-lambda-bridge /bin/sh"
