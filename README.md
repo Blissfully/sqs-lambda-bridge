@@ -2,6 +2,8 @@
 
 Invoke AWS Lambda functions from SQS queues while adhering to strict concurrency limits. 
 
+There is no official way to dispatch Lambda events from SQS. SQS Lambda Bridge provides a way to do this without any dependencies on DynamoDB or other persistence layer. It easily manages a high volume of invocations on the smallest available Fargate task size (less than $15/month). There is no inherent limit on how long invocations can take (even if the 5 minute limit is lifted by Amazon). It will never perform more concurrent invocations than you configure, and will stay at that limit as long as there are messages in the queues.
+
 ## Use
 
 A Dockerfile is provided to simplify deployment, but anywhere you can run `npm start` is sufficient. See [Installation](#installation) for details.
@@ -59,7 +61,7 @@ Example:
 
 ### 3. Purging
 
-There is exactly one O(1) operation in SQS and that is purgeQueue. It's not easy to scan through all jobs and delete only some of them, and there may always be jobs you can't see at the moment, and even viewing a message increments its receive count which may movie it closer to the DQL. Jobs are also immutable. **If there's a class of function invocation that we may need to cancel, dedicate a queue to this function.**
+There is exactly one O(1) operation in SQS and that is purgeQueue. **If there's a class of function invocation that we may need to cancel, dedicate a queue to to it.** All SQS messages are immutable. Selectively deleting messages from the queue requires that you first recieve that message, making it invisible to other clients, and incrementing its recieve count, which may move it closer to the dead-letter queue, before you can delete it. In-flight messages are also invisible, so you won't necessarily find everything on the first pass.
 
 ### 4. Queue-level features.
 
