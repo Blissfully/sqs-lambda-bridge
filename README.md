@@ -42,6 +42,10 @@ Create an SQS queue and add a tag called `sqsLambdaBridge`. All queues with this
 |   `concurrency`   |    1    | [Max 1000 total across all lambdas, but you can ask AWS for more.](https://docs.aws.amazon.com/lambda/latest/dg/limits.html) |
 |    `batchSize`    |   10    |                             Max is 10. Low values mean better utilization but more API traffic.                              |
 
+> **Note:** The default visibility timeout for these queues must be at least as long as the longest timeout for the functions in that queue. If in doubt, 310 seconds is a reasonable value.
+
+> **Note:** You should configure a dead letter queue, or else invocations which fail will be retried immediately and continue until they succeed or expire from the queue.
+
 ## Designing your queues
 
 For the highest throughput, you'd want to have only one queue, with lots of workers pulling jobs from it. There are a few general rules about when it makes sense to split your work into different queues.
@@ -86,13 +90,13 @@ aws iam put-role-policy \
   --policy-document file://iam/role-policy.json
 ```
 
-Next, create a cluster.
+Next, create a cluster. It takes a few minutes to provision and start the new container.
 
 ```sh
 fargate service create --task-role sqs-lambda-bridge sqs-lambda-bridge
 ```
 
-It takes a few minutes to provision and start the new container. You can view logs in real time.
+You can view logs in real time.
 
 ```sh
 fargate service logs sqs-lambda-bridge -f
