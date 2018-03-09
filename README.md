@@ -73,7 +73,7 @@ In this tutorial, we'll be deploying to [Amazon Fargate](https://aws.amazon.com/
 
 Before we begin, you should have installed and configured the official [AWS CLI](https://aws.amazon.com/cli/). You should be able to run e.g. `aws sqs list-queues` without error. We will also be using the _unofficial_ [Fargate CLI](https://github.com/jpignata/fargate). This will automatically use the same credentials as the official CLI. Download that and make sure that the executable file is in your `$PATH`. 
 
-First, create an IAM role which can enumerate your SQS queues and their tags, and invoke your Lambda funcitons.
+First, create an IAM role which can enumerate your SQS queues and their tags, and invoke your Lambda functions.
 
 ```sh
 aws iam create-role \
