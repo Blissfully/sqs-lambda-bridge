@@ -113,3 +113,12 @@ The service only checks its configuration once, at startup. If you add or remove
 ```sh
 fargate service restart sqs-lambda-bridge
 ```
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/Blissfully/sqs-lambda-bridge. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+
+## License
+
+The project is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
