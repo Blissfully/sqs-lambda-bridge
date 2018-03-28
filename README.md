@@ -32,6 +32,8 @@ sqs
 
 ```
 
+**If your Lambda returns a successful response, the message will be removed from the queue.** Otherwise, it will be retried until it expires, subject to any redrive policy on that queue.
+
 ## Configuration
 
 Create an SQS queue and add a tag called `sqsLambdaBridge`. All queues with this tag will be polled continuously. Additional options are supported via tags:
