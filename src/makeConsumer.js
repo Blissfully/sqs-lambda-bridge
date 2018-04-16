@@ -2,7 +2,7 @@ const Consumer = require("sqs-consumer")
 const AWS = require("./aws")
 
 const sqs = new AWS.SQS()
-const lambda = new AWS.Lambda()
+const defaultLambda = new AWS.Lambda()
 
 const makeConsumer = ({ queueUrl, batchSize, label }) => {
   const app = Consumer.create({
@@ -42,14 +42,23 @@ const makeConsumer = ({ queueUrl, batchSize, label }) => {
 }
 
 const handleMessage = (message, done) =>
+{
+  const functionName = message.MessageAttributes.FunctionName.StringValue
+  let lambda = defaultLambda
+
+  if (functionName.startsWith("arn:")) {
+    lambda = new AWS.Lambda({ region: functionName.split(":")[3] })
+  }
+
   lambda.invoke(
     {
-      FunctionName: message.MessageAttributes.FunctionName.StringValue,
+      FunctionName: functionName,
       Payload: message.Body,
       InvocationType: "RequestResponse",
       LogType: "None",
     },
     done
   )
+}
 
 module.exports = makeConsumer
