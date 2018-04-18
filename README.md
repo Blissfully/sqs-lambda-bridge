@@ -14,7 +14,7 @@ Instead of triggering your Lambda function with [`lambda.invoke`](https://docs.a
 const AWS = require("aws-sdk")
 const sqs = new AWS.SQS()
 
-const functionName = "my-function"
+const functionName = "my-function" // Or the fully-qualified ARN of your function
 const payload = { widgetId: 1234 }
 
 sqs
