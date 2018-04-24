@@ -6,8 +6,6 @@ There is no official way to dispatch Lambda events from SQS. SQS Lambda Bridge p
 
 ## Use
 
-A Dockerfile is provided to simplify deployment, but anywhere you can run `npm start` is sufficient. See [Installation](#installation) for details.
-
 Instead of triggering your Lambda function with [`lambda.invoke`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Lambda.html#invoke-property), use [`sqs.sendMessage`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) or [`sqs.sendMessageBatch`](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessageBatch-property). Specify the name of the Lambda function via the [message attribute](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-attributes.html) `FunctionName`. The function payload should be the message body. Both are JSON encoded.
 
 ```js
@@ -33,6 +31,8 @@ sqs
 ```
 
 **If your Lambda returns a successful response, the message will be removed from the queue.** Otherwise, it will be retried until it expires, subject to any redrive policy on that queue.
+
+A Dockerfile is provided to simplify deployment, but anywhere you can run `npm start` is sufficient. See [Installation](#installation) for details.
 
 ## Configuration
 
