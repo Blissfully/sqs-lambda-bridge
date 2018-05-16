@@ -49,7 +49,11 @@ const handleMessage = (message, done) => {
       InvocationType: "RequestResponse",
       LogType: "None",
     },
-    done
+    (err, data) => {
+      if (err) return done(err)
+      if (data.FunctionError) return done(new Error(data.FunctionError))
+      done(null, data)
+    }
   )
 }
 
