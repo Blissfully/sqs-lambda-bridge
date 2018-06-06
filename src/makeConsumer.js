@@ -35,7 +35,7 @@ const makeConsumer = ({ queueUrl, batchSize, label }) => {
 
   app.on("stopped", () => console.info(label, "stopped"))
 
-  app.on("empty", () => console.info(label, "queue is empty"))
+  // app.on("empty", () => console.info(label, "queue is empty"))
 
   app.start()
 }
