@@ -2,7 +2,9 @@
 
 Invoke AWS Lambda functions from SQS queues while adhering to strict concurrency limits. 
 
-There is no official way to dispatch Lambda events from SQS. SQS Lambda Bridge provides a way to do this without any dependencies on DynamoDB or other persistence layer. It easily manages a high volume of invocations on the smallest available Fargate task size (less than $15/month). There is no inherent limit on how long invocations can take (even if the 5 minute limit is extended by Amazon). It will never perform more concurrent invocations than you configure, and will stay at that limit as long as there are messages in the queues.
+There is once was no official way to dispatch Lambda events from SQS. SQS Lambda Bridge provides a way to do this without any dependencies on DynamoDB or other persistence layer. It easily manages a high volume of invocations on the smallest available Fargate task size (less than $15/month). There is no inherent limit on how long invocations can take (even if the 5 minute limit is extended by Amazon). It will never perform more concurrent invocations than you configure, and will stay at that limit as long as there are messages in the queues.
+
+While AWS has since added official support for SQS events, it doesn't support FIFO queues, and isn't ideally suited to the kind of scarce-resource-protection role that necessitated the creation of this project.
 
 ## Use
 
