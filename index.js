@@ -12,7 +12,7 @@ const makeConsumer = require("./src/makeConsumer")
 console.info("starting sqs-lambda-bridge")
 
 getConfig().then(config => {
-  console.info("config", config)
+  console.info("config", JSON.stringify(config, null, 2))
   for (const queueUrl in config) {
     const queueName = getQueueName(queueUrl)
     const tags = config[queueUrl]
@@ -25,6 +25,8 @@ getConfig().then(config => {
 })
 
 const calcBatchSizes = (target, maxBatchSize) =>
-  Array(Math.trunc(target / maxBatchSize)).fill(maxBatchSize).concat(target % maxBatchSize || [])
+  Array(Math.trunc(target / maxBatchSize))
+    .fill(maxBatchSize)
+    .concat(target % maxBatchSize || [])
 
 const getQueueName = QueueUrl => path.basename(URL.parse(QueueUrl).path)
