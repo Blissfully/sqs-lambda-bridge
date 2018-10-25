@@ -19,6 +19,9 @@ AWS.config.update({
   retryDelayOptions: {
     customBackoff: fullJitter,
   },
+  httpOptions: {
+    timeout: 900000
+  },
 })
 
 AWS.config.setPromisesDependency(Promise)
