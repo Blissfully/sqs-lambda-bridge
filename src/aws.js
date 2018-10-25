@@ -1,8 +1,7 @@
 const Promise = require("bluebird")
 const AWS = require("aws-sdk")
 
-const MAX_LAMBDA_TIMEOUT_MILLISECONDS = 900000
-const TEN_PERCENT_INCLUSIVE = 1.1
+const MAX_LAMBDA_TIMEOUT_SECONDS = 900
 
 /*
   https://www.awsarchitectureblog.com/2015/03/backoff.html
@@ -27,7 +26,7 @@ AWS.config.update({
   // Setting this to the maximum timeout for Lambda and some additional padding for establishing connections should prevent
   // timeouts.
   httpOptions: {
-    timeout: MAX_LAMBDA_TIMEOUT_MILLISECONDS * TEN_PERCENT_INCLUSIVE
+    timeout: (MAX_LAMBDA_TIMEOUT_SECONDS + 10) * 1000
   },
 })
 
