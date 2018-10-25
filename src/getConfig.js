@@ -18,12 +18,23 @@ const getConfig = () =>
         sqs
           .listQueueTags({ QueueUrl })
           .promise()
-          .then(response => {
-            if (!!response.Tags && typeof response.Tags.sqsLambdaBridge !== "undefined") {
-              return Object.assign(acc, { [QueueUrl]: Object.assign({}, defaultOptions, response.Tags) })
+          .then(({ Tags }) => {
+            if (!!Tags && typeof Tags.sqsLambdaBridge !== "undefined") {
+              const options = Object.assign({}, defaultOptions)
+              for (tagName in defaultOptions) {
+                if (tagName in Tags) {
+                  options[tagName] = Tags[tagName]
+                }
+              }
+              if (QueueUrl.endsWith(".fifo")) {
+                console.log(`Forcing ${QueueUrl} to use batchSize 1 because it is FIFO.`)
+                options.batchSize = 1
+              }
+              acc[QueueUrl] = options
             } else {
-              return acc
+              console.log(`Ignoring ${QueueUrl} due to no config tags`)
             }
+            return acc
           }),
       {}
     )
