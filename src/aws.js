@@ -1,6 +1,9 @@
 const Promise = require("bluebird")
 const AWS = require("aws-sdk")
 
+const MAX_LAMBDA_TIMEOUT_MILLISECONDS = 900000
+const TEN_PERCENT_INCLUSIVE = 1.1
+
 /*
   https://www.awsarchitectureblog.com/2015/03/backoff.html
   Explore in the console with:
@@ -19,8 +22,12 @@ AWS.config.update({
   retryDelayOptions: {
     customBackoff: fullJitter,
   },
+  // When invoking lambdas with RequestResponse the connection to the lambda will remain open for as long
+  // as the lambda is executing. The default timeout of the http connection that the AWS SDK uses is 120k ms(2 minutes).
+  // Setting this to the maximum timeout for Lambda and some additional padding for establishing connections should prevent
+  // timeouts.
   httpOptions: {
-    timeout: 900000
+    timeout: MAX_LAMBDA_TIMEOUT_MILLISECONDS * TEN_PERCENT_INCLUSIVE
   },
 })
 
