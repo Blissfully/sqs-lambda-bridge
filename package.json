@@ -20,6 +20,7 @@
     "sqs-consumer": "3.8.0"
   },
   "devDependencies": {
-    "prettier-eslint": "8.8.1"
+    "prettier": "1.14.3",
+    "prettier-eslint": "8.8.2"
   }
 }
