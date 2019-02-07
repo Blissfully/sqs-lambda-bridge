@@ -1,14 +1,14 @@
 const Consumer = require("sqs-consumer")
 const AWS = require("./aws")
 
-const sqs = new AWS.SQS()
+const sqs = new AWS.SQS({ logger: console })
 
 const makeConsumer = ({ queueUrl, batchSize, label }) => {
   const app = Consumer.create({
     sqs,
     batchSize,
     queueUrl,
-    messageAttributeNames: [ "FunctionName" ],
+    messageAttributeNames: ["FunctionName"],
     handleMessage,
   })
 
@@ -59,7 +59,7 @@ const handleMessage = (message, done) => {
 
 const parseMessage = message => {
   const functionName = message.MessageAttributes.FunctionName.StringValue
-  if (functionName.includes(":"))  {
+  if (functionName.includes(":")) {
     // This is an ARN, not a function name.
     const arn = parseLambdaArn(functionName)
     return {
@@ -77,7 +77,7 @@ const parseMessage = message => {
 
 // arn:aws:lambda:region:account-id:function:function-name
 const parseLambdaArn = string => {
-  const [ , , lambda, region, accountId, type, name, qualifier ] = string.split(":")
+  const [, , lambda, region, accountId, type, name, qualifier] = string.split(":")
   if (lambda === "lambda" && type === "function") {
     return { region, accountId, name, qualifier }
   } else {
@@ -89,7 +89,7 @@ const lambdaApiCache = {}
 const getLambdaApi = region => {
   if (!(region in lambdaApiCache)) {
     console.log(`Adding new Lambda API instance for ${region}`)
-    lambdaApiCache[region] = new AWS.Lambda({ region })
+    lambdaApiCache[region] = new AWS.Lambda({ region, logger: console })
   }
   return lambdaApiCache[region]
 }
