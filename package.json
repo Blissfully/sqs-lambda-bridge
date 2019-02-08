@@ -15,7 +15,7 @@
     "sh": "docker exec -i -t sqs-lambda-bridge /bin/sh"
   },
   "dependencies": {
-    "aws-sdk": "2.205.0",
+    "aws-sdk": "2.399.0",
     "bluebird": "3.5.1",
     "sqs-consumer": "3.8.0"
   },
