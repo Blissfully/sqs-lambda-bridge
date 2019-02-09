@@ -2,7 +2,7 @@
   "name": "sqs-lambda-bridge",
   "version": "1.0.0",
   "description": "The missing SQS → Lambda bridge",
-  "main": "index.js",
+  "main": "build/index.js",
   "contributors": [
     {
       "name": "Jacob Elder",
@@ -11,7 +11,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "start": "node ./index.js",
+    "start": "node ./build/index.js",
     "sh": "docker exec -i -t sqs-lambda-bridge /bin/sh"
   },
   "dependencies": {
