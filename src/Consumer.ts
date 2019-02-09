@@ -54,6 +54,7 @@ export default class Consumer {
           })
           .promise()
 
+        // We know deleting stuff takes forever. We could achieve better throughput by changing .promise() to .send() and removing the `await`
         this.setState(State.Delete)
         await sqs
           .deleteMessage({
