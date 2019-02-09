@@ -20,6 +20,7 @@ AWS.config.update({
   retryDelayOptions: {
     customBackoff: fullJitter,
   },
+  logger: console,
   // When invoking lambdas with RequestResponse the connection to the lambda will remain open for as long
   // as the lambda is executing. The default timeout of the http connection that the AWS SDK uses is 120k ms(2 minutes).
   // Setting this to the maximum timeout for Lambda and some additional padding for establishing connections should prevent

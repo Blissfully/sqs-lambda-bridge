@@ -1,5 +1,5 @@
 import AWS from "./aws"
-const sqs = new AWS.SQS()
+const sqs = new AWS.SQS({ logger: console })
 
 import URL = require("url")
 import path = require("path")
@@ -25,7 +25,7 @@ type QueueOptions = {
 export default async () => {
   const { QueueUrls } = await sqs.listQueues().promise()
   const config: Options = {}
-  for (const QueueUrl in QueueUrls) {
+  for (const QueueUrl of QueueUrls as string[]) {
     const { Tags } = await sqs.listQueueTags({ QueueUrl }).promise()
     if (Tags && typeof Tags.sqsLambdaBridge !== "undefined") {
       const options: QueueOptions = Object.assign({}, defaultOptions)
@@ -36,14 +36,14 @@ export default async () => {
         }
       }
       if (QueueUrl.endsWith(".fifo")) {
-        console.log(`Forcing ${QueueUrl} to use batchSize 1 because it is FIFO.`)
+        // console.log(`Forcing ${QueueUrl} to use batchSize 1 because it is FIFO.`)
         options.batchSize = 1
       }
       options.url = QueueUrl
       const name = path.basename(URL.parse(QueueUrl).path as string)
       config[name] = options
     } else {
-      console.log(`Ignoring ${QueueUrl} due to no config tags`)
+      // console.log(`Ignoring ${QueueUrl} due to no config tags`)
     }
   }
   return config

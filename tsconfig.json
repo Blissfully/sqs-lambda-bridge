@@ -1,0 +1,16 @@
+{
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./node_modules", "**/__tests__"],
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2017",
+    "preserveConstEnums": true,
+    "strict": true,
+    "rootDir": "src",
+    "outDir": "build",
+    "lib": ["es2017"],
+    "typeRoots": ["./src/typings", "./node_modules/@types"]
+  },
+  "compileOnSave": true
+}

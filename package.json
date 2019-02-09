@@ -15,12 +15,12 @@
     "sh": "docker exec -i -t sqs-lambda-bridge /bin/sh"
   },
   "dependencies": {
-    "aws-sdk": "2.400.0"
+    "aws-sdk": "2.400.0",
+    "immutable": "4.0.0-rc.12"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.19",
     "@types/jest": "24.0.0",
-    "@types/lodash": "4.14.120",
     "@types/node": "10.12.24",
     "@types/uuid": "3.4.4",
     "jest": "24.1.0",
