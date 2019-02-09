@@ -20,7 +20,19 @@
     "sqs-consumer": "3.8.0"
   },
   "devDependencies": {
-    "prettier": "1.14.3",
-    "prettier-eslint": "8.8.2"
+    "@types/aws-lambda": "8.10.19",
+    "@types/jest": "24.0.0",
+    "@types/lodash": "4.14.120",
+    "@types/node": "10.12.24",
+    "@types/uuid": "3.4.4",
+    "jest": "24.1.0",
+    "prettier": "1.16.4",
+    "prettier-eslint": "8.8.2",
+    "ts-jest": "23.10.5",
+    "ts-node": "8.0.2",
+    "tslint": "5.12.1",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-config-standard": "8.0.1",
+    "typescript": "3.3.3"
   }
 }
