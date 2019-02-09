@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "eg2.tslint",
+    "robertohuertasm.vscode-icons",
+    "wmaurer.change-case",
+    "ms-vscode.sublime-keybindings",
+    "stkb.rewrap",
+    "Tyriar.sort-lines",
+    "mechatroner.rainbow-csv",
+    "mrmlnc.vscode-json5",
+    "ziyasal.vscode-open-in-github",
+    "esbenp.prettier-vscode"
+  ]
+}
