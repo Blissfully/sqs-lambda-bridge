@@ -3,10 +3,8 @@ import AWS from "./aws"
 const sqs = new AWS.SQS()
 
 export enum State {
-  Start = "Start",
-  Wait = "Wait",
+  Receive = "Receive",
   Invoke = "Invoke",
-  Delete = "Delete",
 }
 
 export default class Consumer {
@@ -34,51 +32,32 @@ export default class Consumer {
   }
 
   public async start() {
-    this.setState(State.Wait)
-    for await (const message of receiveMessages(this.params)) {
-      try {
-        if (!message.Attributes) {
-          console.log("No attributes? %j", message)
-          continue
-        }
-        const { region, functionName } = parseMessage(message)
-        const lambda = getLambdaApi(region)
-
+    while (true) {
+      this.setState(State.Receive)
+      const { Messages } = await sqs.receiveMessage(this.params).promise()
+      if (Messages) {
         this.setState(State.Invoke)
-        await lambda
-          .invoke({
-            FunctionName: functionName,
-            Payload: message.Body,
-            InvocationType: "RequestResponse",
-            LogType: "None",
+        await Promise.all(
+          Messages.map(async (message: AWS.SQS.Message) => {
+            try {
+              const { region, functionName } = parseMessage(message)
+              const lambda = getLambdaApi(region)
+
+              await lambda
+                .invoke({
+                  FunctionName: functionName,
+                  Payload: message.Body,
+                  InvocationType: "RequestResponse",
+                  LogType: "None",
+                })
+                .promise()
+
+              sqs.deleteMessage({ QueueUrl: this.url, ReceiptHandle: message.ReceiptHandle as string }).send()
+            } catch (err) {
+              console.log(err)
+            }
           })
-          .promise()
-
-        // We know deleting stuff takes forever. We could achieve better throughput by changing .promise() to .send() and removing the `await`
-        this.setState(State.Delete)
-        await sqs
-          .deleteMessage({
-            QueueUrl: this.url,
-            ReceiptHandle: message.ReceiptHandle as string,
-          })
-          .promise()
-      } catch (err) {
-        console.log(err)
-      }
-      this.setState(State.Wait)
-    }
-  }
-}
-
-// This next line is a workaround for for-await syntax in Node 8.x
-;(Symbol as any).asyncIterator = Symbol.asyncIterator || Symbol.for("Symbol.asyncIterator")
-
-async function* receiveMessages(params: AWS.SQS.ReceiveMessageRequest): AsyncIterableIterator<AWS.SQS.Message> {
-  while (true) {
-    const { Messages } = await sqs.receiveMessage(params).promise()
-    if (Messages) {
-      for (const Message of Messages) {
-        yield Message
+        )
       }
     }
   }
