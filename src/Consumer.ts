@@ -12,13 +12,20 @@ export default class Consumer {
 
   constructor(public url: string, public batchSize: number, public queueName: string, public id: string) {}
 
-  private get params(): AWS.SQS.ReceiveMessageRequest {
+  private get receiveMessageParams(): AWS.SQS.ReceiveMessageRequest {
     return {
       QueueUrl: this.url,
       AttributeNames: ["All"],
       MessageAttributeNames: ["FunctionName"],
       MaxNumberOfMessages: this.batchSize,
       WaitTimeSeconds: 20,
+    }
+  }
+
+  private get invokeParams() {
+    return {
+      InvocationType: "RequestResponse",
+      LogType: "None",
     }
   }
 
@@ -34,23 +41,16 @@ export default class Consumer {
   public async start() {
     while (true) {
       this.setState(State.Receive)
-      const { Messages } = await sqs.receiveMessage(this.params).promise()
+      const { Messages } = await sqs.receiveMessage(this.receiveMessageParams).promise()
       if (Messages) {
         this.setState(State.Invoke)
         await Promise.all(
           Messages.map(async (message: AWS.SQS.Message) => {
             try {
-              const { region, functionName } = parseMessage(message)
+              const { region, FunctionName } = parseMessage(message)
               const lambda = getLambdaApi(region)
 
-              await lambda
-                .invoke({
-                  FunctionName: functionName,
-                  Payload: message.Body,
-                  InvocationType: "RequestResponse",
-                  LogType: "None",
-                })
-                .promise()
+              await lambda.invoke({ FunctionName, Payload: message.Body, ...this.invokeParams }).promise()
 
               sqs.deleteMessage({ QueueUrl: this.url, ReceiptHandle: message.ReceiptHandle as string }).send()
             } catch (err) {
@@ -64,18 +64,18 @@ export default class Consumer {
 }
 
 const parseMessage = (message: AWS.SQS.Message) => {
-  const functionName = (message.MessageAttributes || {}).FunctionName.StringValue as string
-  if (functionName.includes(":")) {
+  const FunctionName = (message.MessageAttributes || {}).FunctionName.StringValue as string
+  if (FunctionName.includes(":")) {
     // This is an ARN, not a function name.
-    const arn = parseLambdaArn(functionName)
+    const arn = parseLambdaArn(FunctionName)
     return {
-      functionName: arn.name,
+      FunctionName: arn.name,
       region: arn.region,
     }
   } else {
     // Just an unqualified function name. Assume its in the same region.
     return {
-      functionName,
+      FunctionName,
       region: AWS.config.region as string,
     }
   }
