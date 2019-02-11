@@ -1,0 +1,17 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "javascript.format.enable": false,
+  "prettier.eslintIntegration": true,
+  "prettier.trailingComma": "es5",
+  "prettier.semi": false,
+  "prettier.printWidth": 120,
+  "prettier.bracketSpacing": true,
+  "prettier.parser": "flow",
+  "editor.tabSize": 2,
+  "files.associations": {
+    ".envrc": "shellscript"
+  },
+  "breadcrumbs.enabled": true,
+  "tslint.packageManager": "yarn"
+}

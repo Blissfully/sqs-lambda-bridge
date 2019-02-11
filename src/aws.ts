@@ -1,5 +1,4 @@
-const Promise = require("bluebird")
-const AWS = require("aws-sdk")
+import AWS = require("aws-sdk")
 
 const MAX_LAMBDA_TIMEOUT_SECONDS = 900
 
@@ -10,8 +9,8 @@ const MAX_LAMBDA_TIMEOUT_SECONDS = 900
 */
 const cap = 30 * 1000
 const base = 100
-const randomBetween = (min, max) => Math.random() * (max - min) + min
-const fullJitter = retryCount => {
+const randomBetween = (min: number, max: number) => Math.random() * (max - min) + min
+const fullJitter = (retryCount: number) => {
   const temp = Math.min(cap, Math.pow(base * 2, retryCount))
   return temp / 2 + randomBetween(0, temp / 2)
 }
@@ -21,22 +20,14 @@ AWS.config.update({
   retryDelayOptions: {
     customBackoff: fullJitter,
   },
+  logger: console,
   // When invoking lambdas with RequestResponse the connection to the lambda will remain open for as long
   // as the lambda is executing. The default timeout of the http connection that the AWS SDK uses is 120k ms(2 minutes).
   // Setting this to the maximum timeout for Lambda and some additional padding for establishing connections should prevent
   // timeouts.
   httpOptions: {
-    timeout: (MAX_LAMBDA_TIMEOUT_SECONDS + 10) * 1000
+    timeout: (MAX_LAMBDA_TIMEOUT_SECONDS + 10) * 1000,
   },
 })
 
-AWS.config.setPromisesDependency(Promise)
-
-// if (process.env._X_AMZN_TRACE_ID) {
-//   return require("aws-xray-sdk").captureAWS(AWS)
-// } else {
-//   console.log("Serverless Offline detected; skipping AWS X-Ray setup")
-//   return AWS
-// }
-
-module.exports = AWS
+export default AWS
