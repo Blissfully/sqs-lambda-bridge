@@ -15,8 +15,9 @@ jobs:
               unzip fargate.zip
             fi
       - run: yarn install
+
       - run: yarn build
-      - run: yarn run jest
+
       - run:
           name: Deploy
           command: |
