@@ -18,8 +18,8 @@ jobs:
           name: Update Node
           command: |
             wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
-            export NVM_DIR=$HOME/.nvm
-            touch $HOME/.nvmrc
+            export NVM_DIR=/opt/circleci/.nvm
+            # touch $HOME/.nvmrc
             source $NVM_DIR/nvm.sh
             nvm install 8.11.4
             nvm use 8.11.4 && nvm alias default 8.11.4
