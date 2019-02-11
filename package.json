@@ -17,7 +17,7 @@
   "dependencies": {
     "aws-sdk": "2.399.0",
     "bluebird": "3.5.1",
-    "sqs-consumer": "4.1.0"
+    "sqs-consumer": "3.8.0"
   },
   "devDependencies": {
     "prettier": "1.14.3",
