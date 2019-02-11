@@ -16,7 +16,9 @@ jobs:
 
       - run:
           name: Install yarn
-          command: curl -o- -L https://yarnpkg.com/install.sh | bash
+          command: |
+            curl -o- -L https://yarnpkg.com/install.sh | bash
+            echo 'export PATH="${PATH}:${HOME}/.yarn/bin"' >> $BASH_ENV
 
       - run: yarn install
 
