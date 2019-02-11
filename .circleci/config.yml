@@ -13,13 +13,12 @@ jobs:
               curl --location --output fargate.zip https://github.com/jpignata/fargate/releases/download/v0.2.3/fargate-0.2.3-linux-amd64.zip
               unzip fargate.zip
             fi
-      
+      - run: yarn install
+      - run: yarn build
+      - run: yarn run jest
       - run:
           name: Deploy
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               ./fargate service deploy sqs-lambda-bridge
             fi
-
-
-
