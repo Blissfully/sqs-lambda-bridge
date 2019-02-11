@@ -1,7 +1,9 @@
 version: 2
 jobs:
   build:
-    machine: true
+    docker:
+      - image: circleci/node:8.10
+
     steps:
       - checkout
 
