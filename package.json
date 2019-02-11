@@ -12,7 +12,9 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./build/index.js",
-    "sh": "docker exec -i -t sqs-lambda-bridge /bin/sh"
+    "sh": "docker exec -i -t sqs-lambda-bridge /bin/sh",
+    "build": "tsc",
+    "dev": "tsc --watch"
   },
   "dependencies": {
     "aws-sdk": "2.400.0",
