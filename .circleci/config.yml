@@ -21,6 +21,7 @@ jobs:
             nvm install 8.11.4
             nvm use node
 
+      - run:
           name: Install yarn
           command: |
             curl -o- -L https://yarnpkg.com/install.sh | bash
