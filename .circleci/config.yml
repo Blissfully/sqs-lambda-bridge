@@ -17,6 +17,8 @@ jobs:
       - run:
           name: Update Node
           command: |
+            echo 'export NVM_DIR=$HOME/.nvm' >> $BASH_ENV
+            echo 'source $NVM_DIR/nvm.sh' >> $BASH_ENV
             nvm install 8.11.4
             nvm use 8.11.4
 
