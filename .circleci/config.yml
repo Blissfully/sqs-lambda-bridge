@@ -23,6 +23,7 @@ jobs:
             source $NVM_DIR/nvm.sh
             nvm install 8.11.4
             nvm use 8.11.4 && nvm alias default 8.11.4
+            export NVM_PATH=/opt/circleci/.nvm/versions/node/v8.11.4/lib/node
 
       - run:
           name: Install yarn
