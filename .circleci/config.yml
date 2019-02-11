@@ -1,8 +1,7 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/node:8.10
+    machine: true
 
     steps:
       - checkout
@@ -14,6 +13,11 @@ jobs:
               curl --location --output fargate.zip https://github.com/jpignata/fargate/releases/download/v0.2.3/fargate-0.2.3-linux-amd64.zip
               unzip fargate.zip
             fi
+
+      - run:
+          name: Install yarn
+          command: curl -o- -L https://yarnpkg.com/install.sh | bash
+
       - run: yarn install
 
       - run: yarn build
