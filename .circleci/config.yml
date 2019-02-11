@@ -15,10 +15,14 @@ jobs:
             fi
 
       - run:
+          name: Install Node
+          command: |
+            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+            nvm install 8.11.4
+            nvm use node
+
           name: Install yarn
           command: |
-            curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-            sudo apt-get install -y nodejs
             curl -o- -L https://yarnpkg.com/install.sh | bash
             echo 'export PATH="${PATH}:${HOME}/.yarn/bin"' >> $BASH_ENV
 
