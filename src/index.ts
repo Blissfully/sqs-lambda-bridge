@@ -15,7 +15,7 @@ const calcBatchSizes = (target: number, maxBatchSize: number) =>
 
 const consumers = []
 
-void (async function() {
+void (async function () {
   console.info("starting sqs-lambda-bridge")
   const config = await getConfig()
   console.info(JSON.stringify(config, null, 2))
@@ -24,7 +24,6 @@ void (async function() {
     for (const consumerId in batchSizes) {
       const batchSize = batchSizes[consumerId]
       const consumer = new Consumer(config[queueName].url as string, batchSize, queueName, consumerId)
-      consumer.start()
       consumers.push(consumer)
     }
   }
