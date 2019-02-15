@@ -8,42 +8,35 @@ import util = require("util")
 
 const sleep = util.promisify(setTimeout)
 
-const calcBatchSizes = (target: number, maxBatchSize: number) =>
-  Array(Math.trunc(target / maxBatchSize))
+const calcBatchSizes = (concurrency: number, maxBatchSize: number) =>
+  Array(Math.trunc(concurrency / maxBatchSize))
     .fill(maxBatchSize)
-    .concat(target % maxBatchSize || [])
+    .concat(concurrency % maxBatchSize || [])
 
 const consumers = []
 
-void (async function() {
+void (async function () {
   console.info("starting sqs-lambda-bridge")
   const config = await getConfig()
   console.info(JSON.stringify(config, null, 2))
   for (const queueName in config) {
     const batchSizes = calcBatchSizes(config[queueName].concurrency, config[queueName].batchSize)
     for (const consumerId in batchSizes) {
-      const batchSize = batchSizes[consumerId]
+      let batchSize
+      // At the moment the fifo queue handler iterates in order over each item
+      // in a batch, the concurrency for a fifo queue should be set to what ever
+      // number you'd expect
+      if (queueName.endsWith(".fifo")) {
+        batchSize = config[queueName].batchSize
+      } else {
+        batchSize = batchSizes[consumerId]
+      }
+
       const consumer = new Consumer(config[queueName].url as string, batchSize, queueName, consumerId)
-      consumer.start()
       consumers.push(consumer)
     }
   }
   for (const consumer of consumers) {
     consumer.start()
   }
-  console.log(`Started ${consumers.length} consumers`)
-  while (true) {
-    summarizeConsumers(consumers)
-    await sleep(1000 * 3)
-  }
 })()
-
-type Summary = { [queue: string]: { [state: string]: number } }
-
-function summarizeConsumers(consumers: Consumer[]) {
-  const summary = consumers.reduce(
-    (acc, consumer) => updateIn(acc, [consumer.queueName, consumer.state], 0, value => value + 1),
-    {} as Summary
-  )
-  console.log(JSON.stringify({ summary }, null, 2))
-}

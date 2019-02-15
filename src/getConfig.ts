@@ -35,10 +35,6 @@ export default async () => {
           options[tagName] = Tags[tagName]
         }
       }
-      if (QueueUrl.endsWith(".fifo")) {
-        // console.log(`Forcing ${QueueUrl} to use batchSize 1 because it is FIFO.`)
-        options.batchSize = 1
-      }
       options.url = QueueUrl
       const name = path.basename(URL.parse(QueueUrl).path as string)
       config[name] = options

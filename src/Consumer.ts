@@ -1,5 +1,4 @@
 import AWS from "./aws"
-
 const sqs = new AWS.SQS()
 
 export enum State {
@@ -7,10 +6,15 @@ export enum State {
   Invoke = "Invoke",
 }
 
+type InvokeParams = {
+  InvocationType: string,
+  LogType: string,
+}
+
 export default class Consumer {
   state: State | undefined
 
-  constructor(public url: string, public batchSize: number, public queueName: string, public id: string) {}
+  constructor(public url: string, public batchSize: number, public queueName: string, public id: string) { }
 
   private get receiveMessageParams(): AWS.SQS.ReceiveMessageRequest {
     return {
@@ -38,30 +42,42 @@ export default class Consumer {
     // console.log(this.label, this.state)
   }
 
+  public isFifo() {
+    return this.queueName.includes(".fifo")
+  }
+
   public async start() {
     while (true) {
       this.setState(State.Receive)
       const { Messages } = await sqs.receiveMessage(this.receiveMessageParams).promise()
       if (Messages) {
         this.setState(State.Invoke)
-        await Promise.all(
-          Messages.map(async (message: AWS.SQS.Message) => {
-            try {
-              const { region, FunctionName } = parseMessage(message)
-              const lambda = getLambdaApi(region)
-
-              await lambda.invoke({ FunctionName, Payload: message.Body, ...this.invokeParams }).promise()
-
-              sqs.deleteMessage({ QueueUrl: this.url, ReceiptHandle: message.ReceiptHandle as string }).send()
-            } catch (err) {
-              console.log(err)
-            }
-          })
-        )
+        if (this.isFifo) {
+          for (const message of Messages) {
+            // handle a fifo batch in strict order, has a max of 10 items
+            await this.invokeLambdaAndDeleteMessage(message)
+          }
+        } else {
+          await Promise.all(
+            Messages.map((message) => this.invokeLambdaAndDeleteMessage(message))
+          )
+        }
       }
     }
   }
+
+  private async invokeLambdaAndDeleteMessage(message: AWS.SQS.Message) {
+    try {
+      const { region, FunctionName } = parseMessage(message)
+      const lambda = getLambdaApi(region)
+      await lambda.invoke({ FunctionName, Payload: message.Body, ...this.invokeParams }).promise()
+      sqs.deleteMessage({ QueueUrl: this.url, ReceiptHandle: message.ReceiptHandle as string }).send()
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
+
 
 const parseMessage = (message: AWS.SQS.Message) => {
   const FunctionName = (message.MessageAttributes || {}).FunctionName.StringValue as string
