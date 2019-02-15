@@ -1,6 +1,11 @@
 {
-  "include": ["./src/**/*.ts"],
-  "exclude": ["./node_modules", "**/__tests__"],
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "./node_modules",
+    "**/__tests__"
+  ],
   "compilerOptions": {
     "moduleResolution": "node",
     "module": "commonjs",
@@ -9,8 +14,14 @@
     "strict": true,
     "rootDir": "src",
     "outDir": "build",
-    "lib": ["es2017"],
-    "typeRoots": ["./src/typings", "./node_modules/@types"]
+    "lib": [
+      "es2017"
+    ],
+    "typeRoots": [
+      "./src/typings",
+      "./node_modules/@types"
+    ],
+    "resolveJsonModule": true,
   },
   "compileOnSave": true
 }
