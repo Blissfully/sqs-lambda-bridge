@@ -21,7 +21,6 @@
   "dependencies": {
     "aws-sdk": "2.400.0",
     "immutable": "4.0.0-rc.12",
-    "lodash": "4.17.11",
     "uuid": "3.3.2"
   },
   "devDependencies": {
