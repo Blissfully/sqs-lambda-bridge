@@ -39,7 +39,6 @@ export default class Consumer {
 
   private setState(stateName: State) {
     this.state = stateName
-    // console.log(this.label, this.state)
   }
 
   public isFifo() {
