@@ -15,6 +15,13 @@ const fullJitter = (retryCount: number) => {
   return temp / 2 + randomBetween(0, temp / 2)
 }
 
+// http://theantway.com/2017/06/troubleshooting-of-blocked-requests-when-fetching-messages-from-hundreds-sqs-queues/
+// https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/node-configuring-maxsockets.html
+const https = require('https');
+const agent = new https.Agent({
+  maxSockets: 10000
+});
+
 AWS.config.update({
   correctClockSkew: true,
   retryDelayOptions: {
@@ -27,7 +34,9 @@ AWS.config.update({
   // timeouts.
   httpOptions: {
     timeout: (MAX_LAMBDA_TIMEOUT_SECONDS + 10) * 1000,
+    agent: agent
   },
+
 })
 
 export default AWS
