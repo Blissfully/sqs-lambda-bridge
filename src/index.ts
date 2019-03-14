@@ -1,3 +1,5 @@
+require("source-map-support").install()
+
 // sqs-consumer needs this
 console.assert(process.env.AWS_REGION, "AWS_REGION must be set")
 
@@ -15,7 +17,7 @@ const calcBatchSizes = (target: number, maxBatchSize: number) =>
 
 const consumers = []
 
-void (async function () {
+void (async function() {
   console.info("starting sqs-lambda-bridge")
   const config = await getConfig()
   console.info(JSON.stringify(config, null, 2))
