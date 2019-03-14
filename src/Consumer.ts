@@ -1,6 +1,6 @@
 import AWS from "./aws"
 
-const sqs = new AWS.SQS()
+const sqs = new AWS.SQS({ logger: console })
 
 export enum State {
   Receive = "Receive",
@@ -108,7 +108,7 @@ const lambdaApiCache: { [region: string]: AWS.Lambda } = {}
 const getLambdaApi = (region: string) => {
   if (!(region in lambdaApiCache)) {
     console.log(`Adding new Lambda API instance for ${region}`)
-    lambdaApiCache[region] = new AWS.Lambda({ region })
+    lambdaApiCache[region] = new AWS.Lambda({ region, logger: console })
   }
   return lambdaApiCache[region]
 }
