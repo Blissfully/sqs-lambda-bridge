@@ -50,15 +50,19 @@ export default class Consumer {
               const { region, FunctionName } = parseMessage(message)
               const lambda = getLambdaApi(region)
 
-              const response = await lambda
+              const { FunctionError, Payload } = await lambda
                 .invoke({ FunctionName, Payload: message.Body, ...this.invokeParams })
                 .promise()
 
               // If FunctionError exists, the function itself failed (not the
               // AWS Lambda API). We want to treat either case as a retryable
               // error, and not delete the message.
-              if (response.FunctionError) {
-                throw new Error(response.FunctionError)
+              switch (FunctionError) {
+                case "Handled":
+                  const { errorMessage } = JSON.parse(Payload as string)
+                  throw new Error(errorMessage)
+                case "Unhandled":
+                  throw new Error(FunctionError)
               }
 
               sqs.deleteMessage({ QueueUrl: this.url, ReceiptHandle: message.ReceiptHandle as string }).send()
