@@ -59,8 +59,8 @@ export default class Consumer {
               // error, and not delete the message.
               switch (FunctionError) {
                 case "Handled":
-                  const { errorMessage } = JSON.parse(Payload as string)
-                  throw new Error(errorMessage)
+                  const { errorMessage, errorType } = JSON.parse(Payload as string)
+                  throw new Error(errorMessage || errorType || FunctionError)
                 case "Unhandled":
                   throw new Error(FunctionError)
               }
