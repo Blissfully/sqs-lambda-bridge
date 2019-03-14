@@ -1,6 +1,6 @@
 import AWS from "./aws"
 
-const sqs = new AWS.SQS()
+const sqs = new AWS.SQS({ logger: console })
 
 export enum State {
   Receive = "Receive",
@@ -50,15 +50,19 @@ export default class Consumer {
               const { region, FunctionName } = parseMessage(message)
               const lambda = getLambdaApi(region)
 
-              const response = await lambda
+              const { FunctionError, Payload } = await lambda
                 .invoke({ FunctionName, Payload: message.Body, ...this.invokeParams })
                 .promise()
 
               // If FunctionError exists, the function itself failed (not the
               // AWS Lambda API). We want to treat either case as a retryable
               // error, and not delete the message.
-              if (response.FunctionError) {
-                throw new Error(response.FunctionError)
+              switch (FunctionError) {
+                case "Handled":
+                  const { errorMessage, errorType } = JSON.parse(Payload as string)
+                  throw new Error(errorMessage || errorType || FunctionError)
+                case "Unhandled":
+                  throw new Error(FunctionError)
               }
 
               sqs.deleteMessage({ QueueUrl: this.url, ReceiptHandle: message.ReceiptHandle as string }).send()
@@ -104,7 +108,7 @@ const lambdaApiCache: { [region: string]: AWS.Lambda } = {}
 const getLambdaApi = (region: string) => {
   if (!(region in lambdaApiCache)) {
     console.log(`Adding new Lambda API instance for ${region}`)
-    lambdaApiCache[region] = new AWS.Lambda({ region })
+    lambdaApiCache[region] = new AWS.Lambda({ region, logger: console })
   }
   return lambdaApiCache[region]
 }
