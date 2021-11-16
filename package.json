@@ -17,7 +17,7 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "aws-sdk": "2.400.0",
+    "aws-sdk": "2.814.0",
     "immutable": "4.0.0-rc.12",
     "source-map-support": "0.5.11"
   },
