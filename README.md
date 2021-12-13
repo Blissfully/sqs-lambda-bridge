@@ -1,4 +1,4 @@
-# SQS Lambda Bridge
+# SQS Lambda Bridge - DEPRECATED
 
 Invoke AWS Lambda functions from SQS queues while adhering to strict concurrency limits. 
 
